@@ -17,19 +17,21 @@ public class AccountController(DataContext dataContext, ITokenService tokenServi
         if(await UserExists(dto.Username)){
             return BadRequest("Username taken");
         }
-        using var hmac=new HMACSHA512();//we're using "using" keyword here so that obj will be destroyed as soon as scope ends
-        //without depending on gc
-        var user=new AppUser{
-            UserName=dto.Username.ToLower(),
-            PasswordHash=hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password)),
-            PasswordSalt=hmac.Key
-        };
-        dataContext.Users.Add(user);
-        await dataContext.SaveChangesAsync();
-        return new UserDto{
-            Username=user.UserName,
-            Token=tokenService.CreateToken(user)
-        };
+        return Ok();
+        // using var hmac=new HMACSHA512();//we're using "using" keyword here so that obj will be destroyed as soon as scope ends
+        // //without depending on gc
+        // var user=new AppUser{
+        //     UserName=dto.Username.ToLower(),
+        //     PasswordHash=hmac.ComputeHash(Encoding.UTF8.GetBytes(dto.Password)),
+        //     PasswordSalt=hmac.Key
+        // };
+        // dataContext.Users.Add(user);
+        // await dataContext.SaveChangesAsync();
+        
+        // return new UserDto{
+        //     Username=user.UserName,
+        //     Token=tokenService.CreateToken(user)
+        // };
     }
     [HttpPost("login")]
     public async Task<ActionResult<UserDto>> loginUser([FromBody]LoginDto loginDto){
